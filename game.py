@@ -7,8 +7,9 @@ FPS = 24
 SCREEN_WIDTH = 900
 SCREEN_HEIGHT = 700
 SPACESHIP_SIZE_IN_PIXELS = 17
-MAX_SPEED = 20
-MIN_SPEED = 10
+MAX_SPEED = 15
+MIN_SPEED = 5
+DEFAULT_DIRECTION = pygame.Vector2(0, -1)
 DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 FramePerSec = pygame.time.Clock()
@@ -22,13 +23,16 @@ class Spaceship(pygame.sprite.Sprite):
         self.image = pygame.image.load("./images/Spaceship.png")
         self.rect = self.image.get_rect()
         self.rect.center = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-        self.direction = pygame.Vector2(1, 0)
+        self.direction = DEFAULT_DIRECTION
         self.speed = MIN_SPEED
         self.degree = 0
 
     def update(self):
         pressed_keys = pygame.key.get_pressed()
         self.handleKeyPress(pressed_keys)
+
+        print(self.degree)
+        print(self.direction)
 
         self.move()
     
@@ -41,27 +45,30 @@ class Spaceship(pygame.sprite.Sprite):
         if pressed_keys[K_RIGHT]:
             self.rotateRight()
         if pressed_keys[K_UP]:
-            self.increaseSpeed()
+            self.moveForward()
         else:
             self.decreaseSpeed()
 
+    def moveForward(self):
+        if(self.direction == DEFAULT_DIRECTION.rotate(self.degree)):
+            self.increaseSpeed()
+        else:
+            self.speed = MIN_SPEED
+            self.direction = DEFAULT_DIRECTION.rotate(self.degree * (-1))
+
     def increaseSpeed(self):
         if(self.speed <= MAX_SPEED):
-            self.speed += (MAX_SPEED - MIN_SPEED) / FPS
+            self.speed += (MAX_SPEED - MIN_SPEED) / (2 * FPS)
     
     def decreaseSpeed(self):
         if(self.speed >= MIN_SPEED):
-            self.speed -= (MAX_SPEED - MIN_SPEED) / FPS
+            self.speed -= (MAX_SPEED - MIN_SPEED) / (2 * FPS)
     
     def rotateLeft(self):
-        self.degree += 15
-        self.direction = self.direction.rotate(15)
-        self.direction = self.direction.normalize()
+        self.degree = (self.degree + 15) % 360
     
     def rotateRight(self):
-        self.degree -= 15
-        self.direction = self.direction.rotate(-15)
-        self.direction = self.direction.normalize()
+        self.degree = (self.degree - 15) % 360
 
     def draw(self, surface):
         surface.blit(pygame.transform.rotate(self.image, self.degree), self.rect)
