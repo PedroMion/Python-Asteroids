@@ -80,7 +80,7 @@ class Spaceship(pygame.sprite.Sprite):
         self.degree = (self.degree - 15) % 360
 
     def newProjectile(self):
-        currentDirection = DEFAULT_DIRECTION.rotate(self.degree)
+        currentDirection = DEFAULT_DIRECTION.rotate(-self.degree)
         projectile = Projectile(currentDirection, self.rect.center, self.degree)
 
         self.projectiles.append(projectile)
