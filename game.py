@@ -6,7 +6,7 @@ pygame.init()
 FPS = 24
 SCREEN_WIDTH = 900
 SCREEN_HEIGHT = 700
-SPACESHIP_SIZE_IN_PIXELS = 17
+SPACESHIP_SIZE_IN_PIXELS = 15
 MAX_SPEED = 15
 MIN_SPEED = 5
 DEFAULT_DIRECTION = pygame.Vector2(0, -1)
@@ -21,18 +21,17 @@ class Spaceship(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load("./images/Spaceship.png")
+        self.imageBoosting = pygame.image.load("./images/Spaceship_turbo.png")
         self.rect = self.image.get_rect()
         self.rect.center = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
         self.direction = DEFAULT_DIRECTION
         self.speed = MIN_SPEED
         self.degree = 0
+        self.movingForward = False
 
     def update(self):
         pressed_keys = pygame.key.get_pressed()
         self.handleKeyPress(pressed_keys)
-
-        print(self.degree)
-        print(self.direction)
 
         self.move()
     
@@ -40,16 +39,19 @@ class Spaceship(pygame.sprite.Sprite):
         self.rect.move_ip(self.direction[0] * self.speed, self.direction[1] * self.speed)
 
     def handleKeyPress(self, pressed_keys):
-        if pressed_keys[K_LEFT]:
-            self.rotateLeft()
-        if pressed_keys[K_RIGHT]:
-            self.rotateRight()
         if pressed_keys[K_UP]:
             self.moveForward()
         else:
             self.decreaseSpeed()
 
+        if not self.movingForward:
+            if pressed_keys[K_LEFT]:
+                self.rotateLeft()
+            if pressed_keys[K_RIGHT]:
+                self.rotateRight()
+
     def moveForward(self):
+        self.movingForward = True
         if(self.direction == DEFAULT_DIRECTION.rotate(self.degree)):
             self.increaseSpeed()
         else:
@@ -61,6 +63,7 @@ class Spaceship(pygame.sprite.Sprite):
             self.speed += (MAX_SPEED - MIN_SPEED) / (2 * FPS)
     
     def decreaseSpeed(self):
+        self.movingForward = False
         if(self.speed >= MIN_SPEED):
             self.speed -= (MAX_SPEED - MIN_SPEED) / (2 * FPS)
     
@@ -71,7 +74,10 @@ class Spaceship(pygame.sprite.Sprite):
         self.degree = (self.degree - 15) % 360
 
     def draw(self, surface):
-        surface.blit(pygame.transform.rotate(self.image, self.degree), self.rect)
+        if not self.movingForward:
+            surface.blit(pygame.transform.rotate(self.image, self.degree), self.rect)
+            return
+        surface.blit(pygame.transform.rotate(self.imageBoosting, self.degree), self.rect)
 
 Player = Spaceship()
 
