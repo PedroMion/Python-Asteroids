@@ -29,6 +29,7 @@ class Spaceship(pygame.sprite.Sprite):
         self.speed = MIN_SPEED
         self.degree = 0
         self.movingForward = False
+        self.spacePressed = False
         self.projectiles = []
 
     def update(self):
@@ -55,6 +56,8 @@ class Spaceship(pygame.sprite.Sprite):
 
         if pressed_keys[K_SPACE]:
             self.newProjectile()
+        else:
+            self.spacePressed = False
 
     def moveForward(self):
         self.movingForward = True
@@ -80,10 +83,12 @@ class Spaceship(pygame.sprite.Sprite):
         self.degree = (self.degree - 15) % 360
 
     def newProjectile(self):
-        currentDirection = DEFAULT_DIRECTION.rotate(-self.degree)
-        projectile = Projectile(currentDirection, self.rect.center, self.degree)
+        if self.spacePressed == False:
+            currentDirection = DEFAULT_DIRECTION.rotate(-self.degree)
+            projectile = Projectile(currentDirection, self.rect.center, self.degree)
 
-        self.projectiles.append(projectile)
+            self.projectiles.append(projectile)
+        self.spacePressed = True
 
     def updateAllProjectiles(self):
         for projectile in self.projectiles:
