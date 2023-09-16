@@ -7,6 +7,7 @@ FPS = 24
 SCREEN_WIDTH = 900
 SCREEN_HEIGHT = 700
 SPACESHIP_SIZE_IN_PIXELS = 15
+PROJECTILE_SIZE_IN_PIXELS = 3
 MAX_SPEED = 15
 MIN_SPEED = 5
 DEFAULT_DIRECTION = pygame.Vector2(0, -1)
@@ -28,10 +29,12 @@ class Spaceship(pygame.sprite.Sprite):
         self.speed = MIN_SPEED
         self.degree = 0
         self.movingForward = False
+        self.projectiles = []
 
     def update(self):
         pressed_keys = pygame.key.get_pressed()
         self.handleKeyPress(pressed_keys)
+        self.updateAllProjectiles()
 
         self.move()
     
@@ -49,6 +52,9 @@ class Spaceship(pygame.sprite.Sprite):
                 self.rotateLeft()
             if pressed_keys[K_RIGHT]:
                 self.rotateRight()
+
+        if pressed_keys[K_SPACE]:
+            self.newProjectile()
 
     def moveForward(self):
         self.movingForward = True
@@ -73,11 +79,63 @@ class Spaceship(pygame.sprite.Sprite):
     def rotateRight(self):
         self.degree = (self.degree - 15) % 360
 
+    def newProjectile(self):
+        currentDirection = DEFAULT_DIRECTION.rotate(self.degree)
+        projectile = Projectile(currentDirection, self.rect.center, self.degree)
+
+        self.projectiles.append(projectile)
+
+    def updateAllProjectiles(self):
+        for projectile in self.projectiles:
+            projectile.update([])
+            if(projectile.collided):
+                self.projectiles.remove(projectile)
+                del projectile
+
     def draw(self, surface):
         if not self.movingForward:
             surface.blit(pygame.transform.rotate(self.image, self.degree), self.rect)
-            return
-        surface.blit(pygame.transform.rotate(self.imageBoosting, self.degree), self.rect)
+        else:
+            surface.blit(pygame.transform.rotate(self.imageBoosting, self.degree), self.rect)
+
+        self.drawProjectiles(surface)
+    
+    def drawProjectiles(self, surface):
+        for projectile in self.projectiles:
+            projectile.draw(surface)
+
+
+class Projectile(pygame.sprite.Sprite):
+    def __init__(self, direction, currentPosition, degree):
+        super().__init__()
+        self.image = pygame.transform.rotate(pygame.image.load("./images/Projectile.png"), degree)
+        self.rect = self.image.get_rect()
+        self.rect.center = currentPosition
+        self.direction = direction
+        self.collided = False
+
+    def update(self, meteorList):
+        self.moveForward()
+        self.checkColision(meteorList)
+        self.checkBorderHit()
+
+    def moveForward(self):
+        self.rect.move_ip(self.direction[0] * MAX_SPEED, self.direction[1] * MAX_SPEED)
+
+    def draw(self, surface):
+        surface.blit(self.image, self.rect)
+    
+    def checkColision(self, meteorList):
+        for meteor in meteorList:
+            collide = self.rect.colliderect(meteor.rect)
+            if collide:
+                meteor.destroy()
+                self.collided = True
+    
+    def checkBorderHit(self):
+        if self.rect.left <= 0 or self.rect.right >= SCREEN_WIDTH or self.rect.top <= 0 or self.rect.bottom >= SCREEN_HEIGHT:
+            self.collided = True
+
 
 Player = Spaceship()
 
