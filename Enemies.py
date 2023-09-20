@@ -8,7 +8,17 @@ MAX_SPEED = 15
 MIN_SPEED = 5
 TWO_METEORS_TIME = 3
 ONE_METEOR_TIME = 1.5
-
+DEFAULT_DIRECTION = pygame.Vector2(0, -1)
+DIRECTIONS = {
+    "right": [1, 0],
+    "left": [-1, 0],
+    "up": [0, -1],
+    "down": [0, 1],
+}
+CORNERS = {
+    1: [0, 0],
+    2: [SCREEN_WIDTH, SCREEN_HEIGHT]
+}
 class Enemies(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -28,9 +38,10 @@ class Enemies(pygame.sprite.Sprite):
             meteor.draw(surface)
     
     def getRandomDirection(self):
-        
+        position, border, index = self.getPosition()
+        direction = self.getDirection(border, index)
 
-        return
+        return direction, position
 
     def createMeteor(self):
         direction, position = self.getRandomDirection()
@@ -51,3 +62,29 @@ class Enemies(pygame.sprite.Sprite):
             meteorQuantity = 1
         for i in range(meteorQuantity):
             self.createMeteor()
+
+    def getDirection(self):
+        index = random.randint(1, 2)
+        direction = DIRECTIONS.get(index)
+
+        newValue = random.randint(0, 1)
+        if newValue == 0:
+            direction[newValue] = random.randrange(0.1 * SCREEN_WIDTH, 0.9 * SCREEN_WIDTH)
+        elif newValue == 1:
+            direction[newValue] = random.randrange(0.1 * SCREEN_HEIGHT, 0.9 * SCREEN_HEIGHT)
+        
+        return direction, index, newValue
+    
+    def getDirection(self, border, index):
+        direction = DEFAULT_DIRECTION
+        if border == 1 and index == 0:
+            direction = DEFAULT_DIRECTION.rotate(-random.randrange(135, 225))
+        elif border == 1 and index == 1:
+            direction = DEFAULT_DIRECTION.rotate(-random.randrange(45, 135))
+        elif border == 2 and index == 0:
+            direction = DEFAULT_DIRECTION.rotate(random.randrange(-45, 45))
+        elif border == 2 and index == 1:
+            direction = DEFAULT_DIRECTION.rotate(-random.randrange(225, 270))
+        
+        return direction
+
