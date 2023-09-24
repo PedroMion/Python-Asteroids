@@ -4,7 +4,7 @@ from Meteor import Meteor
 
 SCREEN_WIDTH = 900
 SCREEN_HEIGHT = 700
-MAX_SPEED = 15
+MAX_SPEED = 10
 MIN_SPEED = 5
 TWO_METEORS_TIME = 3
 ONE_METEOR_TIME = 1.5
@@ -62,10 +62,10 @@ class Enemies(pygame.sprite.Sprite):
             meteorQuantity = 1
         for i in range(meteorQuantity):
             self.createMeteor()
-
-    def getDirection(self):
+    
+    def getPosition(self):
         index = random.randint(1, 2)
-        direction = DIRECTIONS.get(index)
+        direction = CORNERS.get(index)
 
         newValue = random.randint(0, 1)
         if newValue == 0:

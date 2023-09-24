@@ -5,10 +5,10 @@ SCREEN_WIDTH = 900
 SCREEN_HEIGHT = 700
 
 class Meteor(pygame.sprite.Sprite):
-    def __init__(self, direction, currentPosition, speed):
+    def __init__(self, direction, currentPosition, degree, speed):
         super().__init__()
-        self.degree = random.randint(0, 360)
-        self.image = pygame.image.load("./images/Projectile.png")
+        self.degree = degree
+        self.image = pygame.image.load("./images/BigMeteor.png")
         self.rect = self.image.get_rect()
         self.rect.center = currentPosition
         self.direction = direction

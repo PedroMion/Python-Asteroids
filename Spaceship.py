@@ -21,14 +21,22 @@ class Spaceship(pygame.sprite.Sprite):
         self.movement = Direction()
         self.movingForward = False
         self.spacePressed = False
+        self.playerAlive = True
         self.projectiles = []
 
-    def update(self):
+    def update(self, meteorList):
         pressed_keys = pygame.key.get_pressed()
         self.handleKeyPress(pressed_keys)
-        self.updateAllProjectiles()
+        self.updateAllProjectiles(meteorList)
 
         self.move()
+
+    def updateAllProjectiles(self, meteorList):
+        for projectile in self.projectiles:
+            projectile.update(meteorList)
+            if(projectile.collided):
+                self.projectiles.remove(projectile)
+                del projectile
     
     def move(self):
         direction = self.movement.direction
@@ -69,12 +77,11 @@ class Spaceship(pygame.sprite.Sprite):
             self.projectiles.append(projectile)
         self.spacePressed = True
 
-    def updateAllProjectiles(self):
-        for projectile in self.projectiles:
-            projectile.update([])
-            if(projectile.collided):
-                self.projectiles.remove(projectile)
-                del projectile
+    def checkMeteorHit(self, meteorList):
+        for meteor in meteorList:
+            if self.rect.colliderect(meteor.rect):
+                return False
+        return True
 
     def draw(self, surface):
         if not self.movingForward:

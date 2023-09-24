@@ -1,6 +1,8 @@
 import pygame, sys
 from pygame.locals import *
 from Spaceship import Spaceship
+from Enemies import Enemies
+from Time import Time
 
 pygame.init()
 
@@ -14,6 +16,8 @@ FramePerSec = pygame.time.Clock()
 pygame.display.set_caption("Asteroids")
 
 Player = Spaceship()
+Meteors = Enemies()
+Clock = Time(FPS)
 
 playerAlive = True
 while playerAlive:
@@ -23,11 +27,15 @@ while playerAlive:
             sys.exit()
         pygame.display.update()
 
-    Player.update()
+    Player.update(Meteors.meteors)
+    Meteors.update(Clock.getTime())
 
     DISPLAYSURF.fill((0,0,0))
 
     Player.draw(DISPLAYSURF)
+    Meteors.draw(DISPLAYSURF)
 
     pygame.display.update()
     FramePerSec.tick(FPS)
+    
+    playerAlive = Player.checkMeteorHit(Meteors.meteors)
