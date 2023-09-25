@@ -65,14 +65,16 @@ class Enemies(pygame.sprite.Sprite):
     
     def getPosition(self):
         index = random.randint(1, 2)
-        direction = CORNERS.get(index)
+        direction = []
+        direction.append(CORNERS.get(index)[0])
+        direction.append(CORNERS.get(index)[1])
 
         newValue = random.randint(0, 1)
         if newValue == 0:
             direction[newValue] = random.randrange(0.1 * SCREEN_WIDTH, 0.9 * SCREEN_WIDTH)
         elif newValue == 1:
             direction[newValue] = random.randrange(0.1 * SCREEN_HEIGHT, 0.9 * SCREEN_HEIGHT)
-        
+
         return direction, index, newValue
     
     def getDirection(self, border, index):
@@ -80,11 +82,11 @@ class Enemies(pygame.sprite.Sprite):
         if border == 1 and index == 0:
             direction = DEFAULT_DIRECTION.rotate(-random.randrange(135, 225))
         elif border == 1 and index == 1:
-            direction = DEFAULT_DIRECTION.rotate(-random.randrange(45, 135))
+            direction = DEFAULT_DIRECTION.rotate(random.randrange(45, 135))
         elif border == 2 and index == 0:
             direction = DEFAULT_DIRECTION.rotate(random.randrange(-45, 45))
         elif border == 2 and index == 1:
-            direction = DEFAULT_DIRECTION.rotate(-random.randrange(225, 270))
+            direction = DEFAULT_DIRECTION.rotate(random.randrange(225, 270))
         
         return direction
 
