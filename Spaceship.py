@@ -19,6 +19,7 @@ class Spaceship(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
         self.movement = Direction()
+        self.ageInPosition = 0
         self.movingForward = False
         self.spacePressed = False
         self.playerAlive = True
@@ -28,8 +29,10 @@ class Spaceship(pygame.sprite.Sprite):
         pressed_keys = pygame.key.get_pressed()
         self.handleKeyPress(pressed_keys)
         self.updateAllProjectiles(meteorList)
-
+        self.checkBorderHit()
         self.move()
+
+        self.ageInPosition += 1
 
     def updateAllProjectiles(self, meteorList):
         for projectile in self.projectiles:
@@ -82,6 +85,23 @@ class Spaceship(pygame.sprite.Sprite):
             if self.rect.colliderect(meteor.rect):
                 return False
         return True
+
+    def checkBorderHit(self):
+        if self.ageInPosition < 24:
+            return
+        
+        if self.rect.left <= 0:
+            self.rect.left = SCREEN_WIDTH
+            self.ageInPosition = 0
+        elif self.rect.right >= SCREEN_WIDTH:
+            self.rect.right = 0
+            self.ageInPosition = 0
+        elif self.rect.top <= 0:
+            self.rect.top = SCREEN_HEIGHT
+            self.ageInPosition = 0
+        elif self.rect.bottom >= SCREEN_HEIGHT:
+            self.rect.bottom = 0
+            self.ageInPosition = 0
 
     def draw(self, surface):
         if not self.movingForward:
