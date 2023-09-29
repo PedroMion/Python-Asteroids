@@ -8,7 +8,9 @@ SCREEN_WIDTH = 900
 SCREEN_HEIGHT = 700
 MAX_SPEED = 15
 MIN_SPEED = 5
+MAX_LIVES = 3
 DEFAULT_DIRECTION = pygame.Vector2(0, -1)
+CENTER_POSITION = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
 
 class Spaceship(pygame.sprite.Sprite):
@@ -17,16 +19,12 @@ class Spaceship(pygame.sprite.Sprite):
         self.image = pygame.image.load("./images/Spaceship.png")
         self.imageBoosting = pygame.image.load("./images/Spaceship_turbo.png")
         self.rect = self.image.get_rect()
-        self.rect.center = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-        self.movement = Direction()
-        self.ageInPosition = 0
-        self.movingForward = False
-        self.spacePressed = False
-        self.playerAlive = True
-        self.projectiles = []
+        self.playerLives = MAX_LIVES
+        self.startPlayer()
 
     def update(self, meteorList):
         pressed_keys = pygame.key.get_pressed()
+        self.checkMeteorHit(meteorList)
         self.handleKeyPress(pressed_keys)
         self.updateAllProjectiles(meteorList)
         self.checkBorderHit()
@@ -83,8 +81,8 @@ class Spaceship(pygame.sprite.Sprite):
     def checkMeteorHit(self, meteorList):
         for meteor in meteorList:
             if self.rect.colliderect(meteor.rect):
-                return False
-        return True
+                self.meteorPlayerChock()
+                return
 
     def checkBorderHit(self):
         if self.ageInPosition < 24:
@@ -102,6 +100,22 @@ class Spaceship(pygame.sprite.Sprite):
         elif self.rect.bottom >= SCREEN_HEIGHT:
             self.rect.bottom = 0
             self.ageInPosition = 0
+
+    def meteorPlayerChock(self):
+        self.playerLives -= 1
+        if self.playerLives <= 0:
+            self.playerAlive = False
+            return
+        self.startPlayer()
+    
+    def startPlayer(self):
+        self.rect.center = CENTER_POSITION
+        self.movement = Direction()
+        self.ageInPosition = 0
+        self.movingForward = False
+        self.spacePressed = False
+        self.playerAlive = True
+        self.projectiles = []
 
     def draw(self, surface):
         if not self.movingForward:

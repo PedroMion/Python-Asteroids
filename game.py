@@ -19,14 +19,13 @@ Player = Spaceship()
 Meteors = Enemies()
 Clock = Time(FPS)
 
-playerAlive = True
-while playerAlive:
+while Player.playerAlive:
     for event in pygame.event.get():
         if event.type==QUIT:
             pygame.quit()
             sys.exit()
         pygame.display.update()
- 
+   
     Player.update(Meteors.meteors)
     Meteors.update(Clock.getTime())
 
@@ -37,5 +36,3 @@ while playerAlive:
 
     pygame.display.update()
     FramePerSec.tick(FPS)
-    
-    playerAlive = Player.checkMeteorHit(Meteors.meteors)

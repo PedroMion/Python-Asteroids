@@ -66,8 +66,8 @@ class Enemies(pygame.sprite.Sprite):
             self.createMeteor()
     
     def generateSmallMeteors(self, meteor):
-        smallMeteor1 = SmallMeteor(meteor.direction.rotate(15), meteor.rect.center, meteor.degree, meteor.speed)
-        smallMeteor2 = SmallMeteor(meteor.direction.rotate(-15), meteor.rect.center, meteor.degree, meteor.speed)
+        smallMeteor1 = SmallMeteor(meteor.direction.direction.rotate(15), meteor.rect.center, meteor.direction.degree, meteor.direction.speed)
+        smallMeteor2 = SmallMeteor(meteor.direction.direction.rotate(-15), meteor.rect.center, meteor.direction.degree, meteor.direction.speed)
 
         self.meteors.append(smallMeteor1)
         self.meteors.append(smallMeteor2)

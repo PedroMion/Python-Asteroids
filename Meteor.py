@@ -1,5 +1,6 @@
 import pygame, random
 from pygame.locals import *
+from Direction import Direction
 
 SCREEN_WIDTH = 900
 SCREEN_HEIGHT = 700
@@ -7,14 +8,14 @@ SCREEN_HEIGHT = 700
 class Meteor(pygame.sprite.Sprite):
     def __init__(self, direction, currentPosition, degree, speed, imageURL):
         super().__init__()
-        self.degree = degree
         self.image = pygame.image.load(imageURL)
         self.rect = self.image.get_rect()
         self.rect.center = currentPosition
-        self.direction = direction
-        self.speed = speed
+        self.direction = Direction()
         self.ageInPosition = 0
         self.collided = False
+
+        self.direction.setAtributtes(direction, degree, speed)
 
     def update(self):
         self.moveForward()
@@ -23,10 +24,10 @@ class Meteor(pygame.sprite.Sprite):
         self.ageInPosition += 1
 
     def moveForward(self):
-        self.rect.move_ip(self.direction[0] * self.speed, self.direction[1] * self.speed)
+        self.rect.move_ip(self.direction.direction[0] * self.direction.speed, self.direction.direction[1] * self.direction.speed)
 
     def draw(self, surface):
-        surface.blit(pygame.transform.rotate(self.image, self.degree), self.rect)
+        surface.blit(pygame.transform.rotate(self.image, self.direction.degree), self.rect)
 
     def checkBorderHit(self):
         if self.ageInPosition < 24:
