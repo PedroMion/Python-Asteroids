@@ -1,6 +1,6 @@
 import pygame, random
 from pygame.locals import *
-from Meteor import Meteor
+from Meteor import BigMeteor, SmallMeteor
 
 SCREEN_WIDTH = 900
 SCREEN_HEIGHT = 700
@@ -47,10 +47,12 @@ class Enemies(pygame.sprite.Sprite):
         direction, position = self.getRandomDirection()
         degree = random.randint(0, 359)
         speed = random.randint(MIN_SPEED, MAX_SPEED)
-        meteor = Meteor(direction, position, degree, speed)
+        meteor = BigMeteor(direction, position, degree, speed)
         self.meteors.append(meteor)
     
     def destroyMeteor(self, meteor):
+        if meteor.type == "Big":    
+            self.generateSmallMeteors(meteor)
         self.meteors.remove(meteor)
         del meteor
     
@@ -63,6 +65,13 @@ class Enemies(pygame.sprite.Sprite):
         for i in range(meteorQuantity):
             self.createMeteor()
     
+    def generateSmallMeteors(self, meteor):
+        smallMeteor1 = SmallMeteor(meteor.direction.rotate(15), meteor.rect.center, meteor.degree, meteor.speed)
+        smallMeteor2 = SmallMeteor(meteor.direction.rotate(-15), meteor.rect.center, meteor.degree, meteor.speed)
+
+        self.meteors.append(smallMeteor1)
+        self.meteors.append(smallMeteor2)
+
     def getPosition(self):
         index = random.randint(1, 2)
         direction = []

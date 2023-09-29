@@ -5,10 +5,10 @@ SCREEN_WIDTH = 900
 SCREEN_HEIGHT = 700
 
 class Meteor(pygame.sprite.Sprite):
-    def __init__(self, direction, currentPosition, degree, speed):
+    def __init__(self, direction, currentPosition, degree, speed, imageURL):
         super().__init__()
         self.degree = degree
-        self.image = pygame.image.load("./images/BigMeteor.png")
+        self.image = pygame.image.load(imageURL)
         self.rect = self.image.get_rect()
         self.rect.center = currentPosition
         self.direction = direction
@@ -47,3 +47,14 @@ class Meteor(pygame.sprite.Sprite):
 
     def destroy(self):
         self.collided = True
+
+
+class BigMeteor(Meteor):
+    def __init__(self, direction, currentPosition, degree, speed):
+        Meteor.__init__(self, direction, currentPosition, degree, speed, "./images/BigMeteor.png")
+        self.type = "Big"
+
+class SmallMeteor(Meteor):
+    def __init__(self, direction, currentPosition, degree, speed):
+        Meteor.__init__(self, direction, currentPosition, degree, speed, "./images/SmallMeteor.png")
+        self.type = "Small"

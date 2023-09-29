@@ -26,7 +26,7 @@ while playerAlive:
             pygame.quit()
             sys.exit()
         pygame.display.update()
-
+ 
     Player.update(Meteors.meteors)
     Meteors.update(Clock.getTime())
 
