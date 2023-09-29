@@ -29,6 +29,7 @@ class Spaceship(pygame.sprite.Sprite):
         self.updateAllProjectiles(meteorList)
         self.checkBorderHit()
         self.move()
+        self.checkImmortality()
 
         self.ageInPosition += 1
 
@@ -80,7 +81,7 @@ class Spaceship(pygame.sprite.Sprite):
 
     def checkMeteorHit(self, meteorList):
         for meteor in meteorList:
-            if self.rect.colliderect(meteor.rect):
+            if self.rect.colliderect(meteor.rect) and self.immortal == False:
                 self.meteorPlayerChock()
                 return
 
@@ -108,16 +109,25 @@ class Spaceship(pygame.sprite.Sprite):
             return
         self.startPlayer()
     
+    def checkImmortality(self):
+        self.timeAliveInFrames += 1
+        if self.timeAliveInFrames == (FPS * 3) and self.immortal == True:
+            self.immortal = False
+
     def startPlayer(self):
         self.rect.center = CENTER_POSITION
         self.movement = Direction()
         self.ageInPosition = 0
+        self.timeAliveInFrames = 0
+        self.immortal = True
         self.movingForward = False
         self.spacePressed = False
         self.playerAlive = True
         self.projectiles = []
 
     def draw(self, surface):
+        if self.immortal == True and (self.timeAliveInFrames % FPS) < FPS/4:
+            return
         if not self.movingForward:
             surface.blit(pygame.transform.rotate(self.image, self.movement.degree), self.rect)
         else:
