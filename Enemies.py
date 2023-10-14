@@ -57,6 +57,9 @@ class Enemies(pygame.sprite.Sprite):
         del meteor
     
     def createMeteorBasedOnTime(self, time):
+        if len(self.meteors) >= 10:
+            return
+        
         meteorQuantity = 0
         if time % TWO_METEORS_TIME == 0:
             meteorQuantity = 2
