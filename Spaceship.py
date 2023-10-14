@@ -22,20 +22,20 @@ class Spaceship(pygame.sprite.Sprite):
         self.playerLives = MAX_LIVES
         self.startPlayer()
 
-    def update(self, meteorList):
+    def update(self, meteorList, status):
         pressed_keys = pygame.key.get_pressed()
-        self.checkMeteorHit(meteorList)
+        self.checkMeteorHit(meteorList, status)
         self.handleKeyPress(pressed_keys)
-        self.updateAllProjectiles(meteorList)
+        self.updateAllProjectiles(meteorList, status)
         self.checkBorderHit()
         self.move()
         self.checkImmortality()
 
         self.ageInPosition += 1
 
-    def updateAllProjectiles(self, meteorList):
+    def updateAllProjectiles(self, meteorList, status):
         for projectile in self.projectiles:
-            projectile.update(meteorList)
+            projectile.update(meteorList, status)
             if(projectile.collided):
                 self.projectiles.remove(projectile)
                 del projectile
@@ -79,10 +79,10 @@ class Spaceship(pygame.sprite.Sprite):
             self.projectiles.append(projectile)
         self.spacePressed = True
 
-    def checkMeteorHit(self, meteorList):
+    def checkMeteorHit(self, meteorList, status):
         for meteor in meteorList:
             if self.rect.colliderect(meteor.rect) and self.immortal == False:
-                self.meteorPlayerChock()
+                self.meteorPlayerChock(status)
                 return
 
     def checkBorderHit(self):
@@ -102,11 +102,13 @@ class Spaceship(pygame.sprite.Sprite):
             self.rect.bottom = 0
             self.ageInPosition = 0
 
-    def meteorPlayerChock(self):
+    def meteorPlayerChock(self, status):
         self.playerLives -= 1
         if self.playerLives <= 0:
             self.playerAlive = False
             return
+        
+        status.decreaseLives()
         self.startPlayer()
     
     def checkImmortality(self):

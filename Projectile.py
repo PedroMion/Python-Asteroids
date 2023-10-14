@@ -15,9 +15,9 @@ class Projectile(pygame.sprite.Sprite):
         self.direction = direction
         self.collided = False
 
-    def update(self, meteorList):
+    def update(self, meteorList, status):
         self.moveForward()
-        self.checkColision(meteorList)
+        self.checkColision(meteorList, status)
         self.checkBorderHit()
 
     def moveForward(self):
@@ -26,10 +26,11 @@ class Projectile(pygame.sprite.Sprite):
     def draw(self, surface):
         surface.blit(self.image, self.rect)
     
-    def checkColision(self, meteorList):
+    def checkColision(self, meteorList, status):
         for meteor in meteorList:
             collide = self.rect.colliderect(meteor.rect)
             if collide:
+                status.increaseScore(meteor.type)
                 meteor.destroy()
                 self.collided = True
     

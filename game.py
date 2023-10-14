@@ -3,6 +3,7 @@ from pygame.locals import *
 from Spaceship import Spaceship
 from Enemies import Enemies
 from Time import Time
+from Status import Status
 
 pygame.init()
 
@@ -17,6 +18,7 @@ pygame.display.set_caption("Asteroids")
 
 Player = Spaceship()
 Meteors = Enemies()
+GameStatus = Status()
 Clock = Time(FPS)
 
 while Player.playerAlive:
@@ -26,13 +28,14 @@ while Player.playerAlive:
             sys.exit()
         pygame.display.update()
    
-    Player.update(Meteors.meteors)
+    Player.update(Meteors.meteors, GameStatus)
     Meteors.update(Clock.getTime())
 
     DISPLAYSURF.fill((0,0,0))
 
     Player.draw(DISPLAYSURF)
     Meteors.draw(DISPLAYSURF)
+    GameStatus.draw(DISPLAYSURF)
 
     pygame.display.update()
     FramePerSec.tick(FPS)
