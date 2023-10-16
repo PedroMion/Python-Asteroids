@@ -4,6 +4,7 @@ from Spaceship import Spaceship
 from Enemies import Enemies
 from Time import Time
 from Status import Status
+from FinalScreen import FinalScreen
 
 pygame.init()
 
@@ -36,6 +37,25 @@ while Player.playerAlive:
     Player.draw(DISPLAYSURF)
     Meteors.draw(DISPLAYSURF)
     GameStatus.draw(DISPLAYSURF)
+
+    pygame.display.update()
+    FramePerSec.tick(FPS)
+
+
+# Game ended
+Screen = FinalScreen()
+Screen.setScore(GameStatus.score)
+
+while(True):
+    for event in pygame.event.get():
+        if event.type==QUIT:
+            pygame.quit()
+            sys.exit()
+        pygame.display.update()
+    
+    DISPLAYSURF.fill((0,0,0))
+
+    Screen.draw(DISPLAYSURF)
 
     pygame.display.update()
     FramePerSec.tick(FPS)
